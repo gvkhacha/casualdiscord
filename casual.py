@@ -44,8 +44,9 @@ class CasualDiscord(discord.Client):
         for userId, config in self.config.items():
             if message.channel.id in config['channels']:
                 start = datetime.fromtimestamp(config['channels'][message.channel.id])
-                print(start)
-                print(message.created_at)
+                diff = datetime.now() - start
+                if(diff.seconds < config['time']):
+                    await self.get_user(userId).send(prompts.FWD.format(content = message.content, author = message.author, channel = message.channel))
 
     async def handle_pm(self, message):
         result = re.match(validRegex, message.content.lower())
